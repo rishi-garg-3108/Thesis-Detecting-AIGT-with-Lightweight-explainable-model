@@ -14,7 +14,7 @@ It also uses the SMAC library for hyperparameter optimization.
 
 
 Make sure you have the required libraries installed!
-Please alter the paths in the script according to your needs, especially the dataset path!
+Please alter the paths in the script according to your needs, especially the dataset path and smac output path!
 """
 
 import os
