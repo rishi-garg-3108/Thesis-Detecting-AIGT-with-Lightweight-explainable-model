@@ -1,169 +1,119 @@
 
 
-Detecting AI-Generated Text with Lightweight Explainable Models
-🎓 Master's Thesis Repository
+# 🧠 Detecting AI-Generated Text with Lightweight Explainable Models
 
-This repository contains the research, code, and documentation for a Master's thesis focusing on the detection of AI-generated text using lightweight, explainable models. The core objective is to develop and evaluate methodologies for distinguishing human-written content from that produced by artificial intelligence, with an emphasis on interpretability and efficiency.
+🎓 *Master’s Thesis Repository*
 
-📂 Repository Structure
+This repository contains the research, code, and documentation for a Master's thesis focused on **detecting AI-generated text** using **lightweight, explainable models**.
+The goal is to develop methodologies that are both **efficient** and **interpretable**, distinguishing **human-written** from **AI-generated** text.
 
-thesis/:
+---
 
-src/: Contains all source code for the project, categorized by functionality.
+## 📂 Repository Structure
 
-src/BERT_model/: Python scripts for fine-tuning, optimizing, and evaluating BERT-based models.
+```bash
+.
+├── thesis/                     # Thesis-related documents
+├── src/                        # Source code
+│   ├── BERT_model/             # Fine-tuning & optimization scripts
+│   │   ├── bert_ablation.py
+│   │   ├── bert_optimisation.py
+│   │   ├── finetuning_bert.py
+│   │   ├── inference.py
+│   │   └── multi_hyperparams_finetuning.py
+│   ├── run_perplexity.ipynb    # Perplexity analysis (Jupyter)
+│   └── run_perplexity.py       # Perplexity analysis (CLI)
+└── README.md
+```
 
-bert_ablation.py: Script for performing ablation studies on optimized BERT configurations.
+---
 
-bert_optimisation.py: Implements hyperparameter optimization for BERT models using SMAC.
+## 🚀 Getting Started
 
-finetuning_bert.py: Script for fine-tuning DistilBERT on sequence classification tasks.
+### 📝 Prerequisites
 
-inference.py: Utility for running inference and evaluating fine-tuned models on test datasets.
+* **Python 3.8+**
+* Recommended: Create a virtual environment
 
-multi_hyperparams_finetuning.py: Script to sequentially run and evaluate multiple hyperparameter configurations.
-
-src/run_perplexity.ipynb: A Jupyter Notebook for calculating text perplexity using various pre-trained models.
-
-src/run_perplexity.py: A Python script version of the perplexity calculation, suitable for command-line execution.
-
-data/: (Conceptual; not explicitly in your repomix-output.xml but often present in such projects)
-
-Raw and processed datasets used for training, validation, and testing the models. This folder is not included in the provided repomix-output.xml but would typically reside here.
-
-results/: (Conceptual; not explicitly in your repomix-output.xml but often present in such projects)
-
-Output artifacts from experiments, including evaluation metrics, plots, logs, and saved model checkpoints. This folder is not included in the provided repomix-output.xml but would typically reside here.
-
-🚀 Getting Started
-
-To replicate the experiments or utilize the code, follow the instructions below.
-
-📝 Prerequisites
-
-Ensure you have Python 3.8+ installed. It is recommended to use a virtual environment:
-
-code
-Bash
-download
-content_copy
-expand_less
-
+```bash
 python -m venv venv
-source venv/bin/activate # On Windows: `venv\Scripts\activate`
-pip install -r requirements.txt # (Assuming you will create a requirements.txt)
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-Note: A requirements.txt file detailing all necessary Python packages is crucial for reproducibility. It should include torch, transformers, scikit-learn, pandas, numpy, tqdm, tabulate, smac, evaluate, and matplotlib.
+> 📦 Required packages include: `torch`, `transformers`, `scikit-learn`, `pandas`, `numpy`, `tqdm`, `tabulate`, `smac`, `evaluate`, `matplotlib`.
 
-🔍 1. Run a Perplexity Test on Your Dataset
+---
 
-The run_perplexity.py script (or its Jupyter Notebook counterpart run_perplexity.ipynb) allows you to calculate the perplexity of texts in your dataset using a pre-trained language model (e.g., GPT-2). This can help in understanding the "naturalness" or "predictability" of human-generated versus AI-generated text.
+## 🔍 1. Run Perplexity Test
 
-Your dataset should be in CSV or JSON format and contain a text column (e.g., tweet, tweets) and a label column (e.g., label, artificial) where 0 indicates original/human text and 1 indicates fake/AI-generated text.
+Calculate perplexity of texts (human vs. AI-generated) using pre-trained models (default: `gpt2`).
 
-Using the Python script:
+```bash
+python src/run_perplexity.py \
+  --input path/to/dataset.csv \
+  --limit 100 \
+  --model_id gpt2
+```
 
-code
-Bash
-download
-content_copy
-expand_less
-IGNORE_WHEN_COPYING_START
-IGNORE_WHEN_COPYING_END
-python src/run_perplexity.py --input path/to/your_dataset.csv/json --limit 100 --model_id gpt2
+* `--input` : Path to dataset (`.csv` or `.json`)
+* `--limit` : (Optional) Max samples per class
+* `--model_id` : Hugging Face model (default: `gpt2`)
 
---input: Path to your dataset file (.csv or .json).
+📓 Or use Jupyter: open `src/run_perplexity.ipynb` in Colab or Jupyter Lab.
 
---limit: (Optional) Maximum number of tweets per class to process.
+---
 
---model_id: (Optional) Hugging Face model ID to use for perplexity calculation (default: gpt2).
+## 🧪 2. Fine-tune BERT Models
 
-Using the Jupyter Notebook:
+### Single-run Fine-tuning
 
-Open src/run_perplexity.ipynb in a Jupyter environment (e.g., Google Colab, local Jupyter Lab) and follow the instructions within the notebook to configure your input_file and limit.
+```bash
+python src/BERT_model/finetuning_bert.py \
+  --run_index 0 \
+  --seed 42 \
+  --data_path /path/to/dataset.jsonl
+```
 
-🧪 2. Fine-tuning BERT Models
+### Multi-hyperparameter Fine-tuning
 
-The src/BERT_model/ directory contains scripts for fine-tuning DistilBERT for sequence classification.
+```bash
+python src/BERT_model/multi_hyperparams_finetuning.py \
+  --seed 42 \
+  --train_file /path/to/train.json \
+  --val_file /path/to/val.json
+```
 
-Single Run Fine-tuning:
+---
 
-To fine-tune the model with a specific configuration (e.g., as part of a run array):
+## ⚙️ 3. Hyperparameter Optimization (SMAC)
 
-code
-Bash
-download
-content_copy
-expand_less
-IGNORE_WHEN_COPYING_START
-IGNORE_WHEN_COPYING_END
-python src/BERT_model/finetuning_bert.py --run_index 0 --seed 42 --data_path /path/to/dataset.jsonl
-
---run_index: Index of the run (useful for SLURM job arrays).
-
---seed: Random seed for reproducibility.
-
---data_path: Path to the dataset file (JSON or JSON Lines).
-
-Multi-Hyperparameter Fine-tuning:
-
-To evaluate multiple predefined hyperparameter configurations sequentially:
-
-code
-Bash
-download
-content_copy
-expand_less
-IGNORE_WHEN_COPYING_START
-IGNORE_WHEN_COPYING_END
-python src/BERT_model/multi_hyperparams_finetuning.py --seed 42 --train_file /path/to/train_data.json --val_file /path/to/val_data.json
-
---seed: Base random seed (seeds for individual configurations will be offset from this).
-
---train_file: Path to the training dataset (JSON Lines).
-
---val_file: Path to the validation dataset (JSON Lines).
-
-⚙️ 3. Hyperparameter Optimization with SMAC
-
-The src/BERT_model/bert_optimisation.py script uses SMAC to find optimal hyperparameters for DistilBERT. This script is designed to be run in environments like SLURM job arrays to parallelize the optimization process.
-
-code
-Bash
-download
-content_copy
-expand_less
-IGNORE_WHEN_COPYING_START
-IGNORE_WHEN_COPYING_END
-# Example for a SLURM environment (assuming SLURM_ARRAY_TASK_ID is set)
-# export SLURM_ARRAY_TASK_ID=0 # For a single local run test
+```bash
 python src/BERT_model/bert_optimisation.py
+```
 
-Ensure the dataset_path variable within bert_optimisation.py is updated to point to your training data.
+> 💡 Configure `dataset_path` and `params_output_dir` inside the script before running.
 
-The output directory for optimized hyperparameters (params_output_dir) should also be configured.
+---
 
-📊 4. Model Inference and Evaluation
+## 📊 4. Model Inference & Evaluation
 
-After fine-tuning, you can evaluate your models on various test datasets using the src/BERT_model/inference.py script.
+```bash
+python src/BERT_model/inference.py \
+  --model_dir /path/to/saved_models \
+  --test_dir /path/to/test_data
+```
 
-code
-Bash
-download
-content_copy
-expand_less
-IGNORE_WHEN_COPYING_START
-IGNORE_WHEN_COPYING_END
-python src/BERT_model/inference.py --model_dir /path/to/your_saved_models --test_dir /path/to/your_test_datasets
+---
 
---model_dir: Directory containing your fine-tuned transformer models (e.g., best_model_run_0).
+## 🤝 Contribution
 
---test_dir: Directory containing your test dataset JSON files.
+This repository documents the **Master's thesis work**.
+For academic inquiries or collaborations, please refer to the author.
 
-🤝 Contribution
+---
 
-This repository serves as a record of the Master's thesis work. For academic inquiries or potential collaborations, please refer to the contact information in the thesis document.
+## 📄 License
 
-📄 License
-
-This project is licensed under the Apache License, Version 2.0 - see the LICENSE file for details.
+Licensed under the **Apache License, Version 2.0**.
+See the [LICENSE](LICENSE) file for details.
